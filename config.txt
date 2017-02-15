@@ -1,0 +1,2 @@
+GRCh37 = absolute/path/to/GRCh37/fasta/file
+GRCh38 = absolute/path/to/GRCh38/fasta/file

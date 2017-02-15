@@ -1,0 +1,18 @@
+INSTALLATION BEFORE DEPLOYING THE APPLICATION TO THE SERVER
+===========================================================
+
+Step 1)
+Run ./install.sh in the main folder
+
+Step 2)
+Add absolute paths pointing to the reference genome fasta files in the config.txt file.
+Both GRCh37= and GRCh38= should be set.
+The corresponding index (.fai) files must also be in the same directories where the fasta files are located.
+
+Step 3)
+Add some transcript databases to transdbs/ folder:
+For example, in order to add Ensembl 70 and 84, run:
+python cava/ensembl_prep.py -e 70 -o transdbs/ensembl_70
+python cava/ensembl_prep.py -e 84 -o transdbs/ensembl_84
+
+Installation is ready, the application will automatically recognize and import the transcript databases.

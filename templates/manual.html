@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>CSN Lookup</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="static/css/simple-sidebar.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand"><a href="/">CSN Lookup</a></li>
+                <li><a href="/">Submit query</a></li>
+                <li><a href="/manual">Usage manual</a></li>
+                <li><a href="/transcripts">Transcript catalog</a></li>
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid" style="position: relative; top: 40px">
+                <div class="row">
+                    <div class="col-lg-12">
+
+                        <h1>Manual</h1>
+                        <br>
+                        <p><b>CSN Lookup</b> is a simple online tool for validating clinical annotations of variants.
+                            It checks whether the inputted annotations follow the <a href="https://www.ncbi.nlm.nih.gov/pubmed/26315209">CSN (Clinical Sequencing Notation) v1.0</a>
+                            specification and correspond to possible variants in the inputted transcripts.
+                            For valid CSN annotations, the tool displays the corresponding genomic coordinates, reference and alternate alleles, the location within the transcript
+                            and functional consequence class of the variants. For invalid annotations, the reasons for failing the CSN specification are provided.
+                        </p>
+
+                        <h3>How it works</h3>
+                        <p> After first assessing the syntax of each inputted annotation, CSN Lookup attempts to convert the annotation to VCF coordinates with regards to the particular
+                            transcript and uses <a href="http://www.icr.ac.uk/cava">CAVA v1.2.0</a> to re-annotate each variant. In this multi-step process, CSN Lookup is able to detect
+                            problems in either the syntax or consistency of annotations (i.e. <i>valid</i> annotations are those that are in CSN v1.0 format and correspond to real sequence variants).
+                        </p>
+
+                        <h3>Submitting a query</h3>
+                        <p> Queries can be submitted on the <a href="/">Submit query page</a>. Each inputted line must include two columns (either space or tab separated) providing the
+                            CSN annotation in question and the ENST ID of the transcript, respectively. A maximum of 500 annotation/transcript pairs can be submitted.
+                        </p>
+
+                        <div style="border:2px solid black; background-color: #595959; color: white; padding: 10px; width: 50%; position: relative; left: 5px;">
+                        <p style="font-size:20px">Example query:</p>
+                            c.421A>G_p.Thr141Ala &nbsp; &nbsp; &nbsp; &nbsp; ENST00000335137 <br> c.490-40_490-37dupGAAA &nbsp; ENST00000428173
+                        </div>
+
+                        <br>
+                        <p>The user should also specify the transcript database to be used by selecting from the available databases in the drop-down list.</p>
+
+                        <h3>The results page</h3>
+                        <p>The results of a processed query are presented in a scrollable table on the Results page. The first two columns ('CSN query' and 'Transcript ID') identify the input record,
+                            while the third column ('Comment') reports any particular issues with the annotation. Invalid annotations are highligthed in red. Clicking on a valid annotation opens up
+                            a window providing more details of the variant such as its genomic coordinates, alleles, location and functional consequence class.
+                            Results can also be downloaded as tab-delimited .txt file by clicking on the Download button.
+                        </p>
+
+                        <h3>Transcript catalog</h3>
+                        <p>The <a href="/transcripts">Transcript catalog page</a> provides a search interface allowing to check which genes and transcripts are included in the available transcript
+                            databases before submitting a query. One can search either by gene or transcript name.
+                        </p>
+
+                        <br>
+                        <br>
+                        <br>
+
+                    </div>
+                </div>
+             </div>
+        </div>
+        <!-- /#page-content-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="static/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="static/js/bootstrap.min.js"></script>
+
+
+
+</body>
+
+</html>
