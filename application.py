@@ -4,7 +4,7 @@ from os import listdir
 from os.path import isfile, join
 import process
 
-app = Flask(__name__)
+application = Flask(__name__)
 
 ########################################################################################################################
 
@@ -81,7 +81,7 @@ def readConfigFile():
 
 dir = ''
 
-@app.route('/', methods=['GET', 'POST'])
+@application.route('/', methods=['GET', 'POST'])
 def index():
     global dir
 
@@ -108,11 +108,11 @@ def index():
 
     return render_template('index.html', transDBs = transcriptDB_names)
 
-@app.route('/manual', methods=['GET'])
+@application.route('/manual', methods=['GET'])
 def manual():
     return render_template('manual.html')
 
-@app.route('/transcripts', methods=['GET', 'POST'])
+@application.route('/transcripts', methods=['GET', 'POST'])
 def transcripts():
 
     transcriptDBs = getTranscriptDBs()
@@ -129,11 +129,16 @@ def transcripts():
     initdbfn = transcriptDBs[transcriptDB_names[0]]
     return render_template('transcripts.html', initlist=getTranscriptsForSearch(initdbfn, 'BRCA1'), transDBs = transcriptDB_names)
 
-@app.route('/download', methods=['POST'])
+@application.route('/download', methods=['POST'])
 def download():
     global dir
     return send_file(dir+'/output.txt', attachment_filename='output.txt', as_attachment=True, mimetype='text/plain')
 
-@app.route('/ie', methods=['GET'])
+@application.route('/ie', methods=['GET'])
 def ie():
     return render_template('ie.html')
+
+
+if __name__ == "__main__":
+    application.debug = True
+    application.run()
