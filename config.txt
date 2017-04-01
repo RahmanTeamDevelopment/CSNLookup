@@ -1,2 +1,2 @@
-GRCh37 = /tmp/Reference/human_g1k_v37.fa
-GRCh38 = /tmp/Reference/hg38.fa
+GRCh37 = /media/volume1/human_g1k_v37.fa
+GRCh38 = /media/volume1/hg38.fa
