@@ -3,3 +3,11 @@
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+# Other folders / files to ignore
+/transdbs
+/submissions
+/env
+/cava
+/.elasticbeanstalk
+/.ebextensions
