@@ -109,9 +109,9 @@ def getTranscriptsForSearch(transcriptdb_fn, searchtxt):
 
 @log_function_enter_and_exit
 def load_config_from_file():
-    scriptdir = os.path.dirname(os.path.realpath(__file__))
+    script_dir = os.path.dirname(os.path.realpath(__file__))
 
-    for line in open(scriptdir+'/config.txt'):
+    for line in open(script_dir + '/config.txt'):
         line = line.strip()
 
         if line == '' or line.startswith('#'):
@@ -195,7 +195,7 @@ if __name__ == "__main__":
     load_config_from_file()
     create_output_directory()
 
-    file_handler = logging.FileHandler(application.config['log_file_name'])
+    file_handler = logging.FileHandler(application.config['log_file_name'], 'wa')
     file_handler.setFormatter(formatter)
     file_handler.setLevel(logging.DEBUG)
 
