@@ -186,26 +186,36 @@ def ie():
     return render_template('ie.html')
 
 
+# This code gets run whether or not we are in __main__ because deploying to AWS Elastic Beanstalk does not
+# result in __main__ being called.
+application.debug = False
+application.logger.info("Setting up loggers")
+
+formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(pathname)s - Line %(lineno)s - %(message)s")
+
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(formatter)
+stream_handler.setLevel(logging.DEBUG)
+
+application.logger.addHandler(stream_handler)
+application.logger.setLevel(logging.DEBUG)
+
+load_config_from_file()
+
+file_handler = logging.FileHandler(application.config['log_file_name'], 'wa')
+file_handler.setFormatter(formatter)
+file_handler.setLevel(logging.DEBUG)
+
+application.logger.addHandler(file_handler)
+create_output_directory()
+
+
+
 if __name__ == "__main__":
-
-    application.debug = False
-    application.logger.info("Setting up loggers")
-
-    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(pathname)s - Line %(lineno)s - %(message)s")
-    load_config_from_file()
-    create_output_directory()
-
-    file_handler = logging.FileHandler(application.config['log_file_name'], 'wa')
-    file_handler.setFormatter(formatter)
-    file_handler.setLevel(logging.DEBUG)
-
-    stream_handler = logging.StreamHandler()
-    stream_handler.setFormatter(formatter)
-    stream_handler.setLevel(logging.DEBUG)
-
-    application.logger.addHandler(file_handler)
-    application.logger.addHandler(stream_handler)
-    application.logger.setLevel(logging.DEBUG)
     application.logger.debug("Finished setting up logger")
-    application.logger.debug("Running CSNLookup server")
+    application.logger.debug("Starting up CSNLookup server in __main__")
     application.run()
+    application.logger.debug("CSNLookup server is now running")
+else:
+    application.logger.debug("Starting up CSNLookup server no in __main__ (probably on AWS)")
+
