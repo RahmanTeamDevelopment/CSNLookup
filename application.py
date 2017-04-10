@@ -22,7 +22,7 @@ def log_function_enter_and_exit(the_function):
         )
 
         return ret_val
-    
+
     return wrapper
 
 
@@ -177,7 +177,7 @@ def ie():
 
 if __name__ == "__main__":
 
-    application.debug = True
+    application.debug = False
     application.logger.info("Setting up loggers")
 
     formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(pathname)s - %(lineno)s - %(message)s")
