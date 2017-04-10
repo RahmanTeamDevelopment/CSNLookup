@@ -11,3 +11,7 @@
 /cava
 /.elasticbeanstalk
 /.ebextensions
+
+*.pyc
+
+.idea

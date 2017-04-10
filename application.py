@@ -2,14 +2,32 @@ from flask import Flask, render_template, request, jsonify, send_file
 import os
 from os import listdir
 from os.path import isfile, join
+import logging
 import process
 
 application = Flask(__name__)
 
-########################################################################################################################
 
-# Pre-process input
+def log_function_enter_and_exit(the_function):
+    def wrapper(*args, **kwargs):
+
+        application.logger.debug(
+            "Entering function {}".format(the_function.func_name)
+        )
+
+        the_function(*args, **kwargs)
+
+        application.logger.debug(
+            "Exited function {}".format(the_function.func_name)
+        )
+
+    return wrapper
+
+
+@log_function_enter_and_exit
 def processInput(input_records):
+    application.logger.debug("Processing input records {}".format(input_records))
+
     CSNstrings = []
     ENSTIDs = []
     for record in input_records:
@@ -26,7 +44,8 @@ def processInput(input_records):
 
     return CSNstrings, ENSTIDs
 
-# Create output directory
+
+@log_function_enter_and_exit
 def makeOutputDir():
     workingdir = os.getcwd()
     i = 0
@@ -36,7 +55,8 @@ def makeOutputDir():
             os.mkdir(workingdir+'/submissions/submission_'+str(i))
             return workingdir+'/submissions/submission_'+str(i)
 
-# Get dictionary of transcript database files
+
+@log_function_enter_and_exit
 def getTranscriptDBs():
     ret = dict()
     scriptdir = os.path.dirname(os.path.realpath(__file__))
@@ -51,7 +71,8 @@ def getTranscriptDBs():
         ret[name] = fn
     return ret
 
-# Search in transcript database
+
+@log_function_enter_and_exit
 def getTranscriptsForSearch(transcriptdb_fn, searchtxt):
     scriptdir = os.path.dirname(os.path.realpath(__file__))
     ret = []
@@ -64,20 +85,22 @@ def getTranscriptsForSearch(transcriptdb_fn, searchtxt):
         if searchtxt in gene or searchtxt in enst: ret.append((gene,enst))
     return ret
 
-# Read CSN Lookup configuration file
-def readConfigFile():
-    ret = dict()
+
+@log_function_enter_and_exit
+def load_config_from_file():
     scriptdir = os.path.dirname(os.path.realpath(__file__))
+
     for line in open(scriptdir+'/config.txt'):
         line = line.strip()
-        if line == '' or line.startswith('#'): continue
+
+        if line == '' or line.startswith('#'):
+            continue
+
         [key, value] = line.split('=')
         key = key.strip()
         value = value.strip()
-        ret[key] = value
-    return ret
+        application.config[key] = value
 
-########################################################################################################################
 
 dir = ''
 
@@ -99,18 +122,19 @@ def index():
         CSNstrings, ENSTIDs = processInput(input_records)
         if len(CSNstrings) == 0: return render_template('index.html', transDBs = transcriptDB_names)
 
-        refconfig = readConfigFile()
         gbuild = selected_db[selected_db.find('GRC'):-1]
-        ref_fn = refconfig[gbuild]
+        ref_fn = application.config[gbuild]
 
         results = process.run(dir, CSNstrings, ENSTIDs, transcriptdb, ref_fn)
         return render_template('results.html', results = results)
 
     return render_template('index.html', transDBs = transcriptDB_names)
 
+
 @application.route('/manual', methods=['GET'])
 def manual():
     return render_template('manual.html')
+
 
 @application.route('/transcripts', methods=['GET', 'POST'])
 def transcripts():
@@ -129,10 +153,12 @@ def transcripts():
     initdbfn = transcriptDBs[transcriptDB_names[0]]
     return render_template('transcripts.html', initlist=getTranscriptsForSearch(initdbfn, 'BRCA1'), transDBs = transcriptDB_names)
 
+
 @application.route('/download', methods=['POST'])
 def download():
     global dir
     return send_file(dir+'/output.txt', attachment_filename='output.txt', as_attachment=True, mimetype='text/plain')
+
 
 @application.route('/ie', methods=['GET'])
 def ie():
@@ -140,5 +166,24 @@ def ie():
 
 
 if __name__ == "__main__":
+
     application.debug = True
+    application.logger.info("Setting up loggers")
+
+    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(pathname)s - %(lineno)s - %(message)s")
+    load_config_from_file()
+
+    file_handler = logging.FileHandler(application.config['log_file_name'])
+    file_handler.setFormatter(formatter)
+    file_handler.setLevel(logging.DEBUG)
+
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter)
+    stream_handler.setLevel(logging.INFO)
+
+    application.logger.addHandler(file_handler)
+    application.logger.addHandler(stream_handler)
+    application.logger.setLevel(logging.DEBUG)
+    application.logger.debug("Finished setting up logger")
+    application.logger.debug("Running CSNLookup server")
     application.run()

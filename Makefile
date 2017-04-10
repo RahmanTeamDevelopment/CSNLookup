@@ -12,3 +12,7 @@ setup:
 
 deploy:
 	eb create csn-lookup-env --timeout=5000 --verbose --debug
+
+clean:
+	rm *.pyc
+	rm -rf env
