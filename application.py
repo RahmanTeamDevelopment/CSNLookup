@@ -15,12 +15,14 @@ def log_function_enter_and_exit(the_function):
             "Entering function {}".format(the_function.func_name)
         )
 
-        the_function(*args, **kwargs)
+        ret_val = the_function(*args, **kwargs)
 
         application.logger.debug(
             "Exited function {}".format(the_function.func_name)
         )
 
+        return ret_val
+    
     return wrapper
 
 
@@ -58,17 +60,25 @@ def makeOutputDir():
 
 @log_function_enter_and_exit
 def getTranscriptDBs():
-    ret = dict()
-    scriptdir = os.path.dirname(os.path.realpath(__file__))
-    filenames = [f for f in listdir(scriptdir + '/transdbs/') if f.endswith('.txt') and isfile(join(scriptdir + '/transdbs/', f))]
-    for fn in filenames:
-        name = ''
-        for line in open(scriptdir + '/transdbs/' + fn):
+    ret = {}
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    file_names = []
+
+    for f in listdir(script_dir + '/transdbs/'):
+        if f.endswith('.txt'):
+            application.logger.debug("Adding transcript db {}".format(f))
+            file_names.append(f)
+
+    for fn in file_names:
+        for line in open(script_dir + '/transdbs/' + fn):
             line = line.strip()
             if line.startswith('#'):
                 name = line[line.find('Ensembl release'):]
+                ret[name] = fn
+                application.logger.debug(
+                    "Adding ENSEMBL release {} from file {}".format(name, fn)
+                )
                 break
-        ret[name] = fn
     return ret
 
 
@@ -179,7 +189,7 @@ if __name__ == "__main__":
 
     stream_handler = logging.StreamHandler()
     stream_handler.setFormatter(formatter)
-    stream_handler.setLevel(logging.INFO)
+    stream_handler.setLevel(logging.DEBUG)
 
     application.logger.addHandler(file_handler)
     application.logger.addHandler(stream_handler)

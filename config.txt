@@ -1,3 +1,3 @@
-GRCh37=/media/volume1/References/human_g1k_v37.fa
-GRCh38=/media/volume1/References/hg38.fa
+GRCh37=/Users/arimmer/Work/Reference/Reference/human_g1k_v37.fa
+GRCh38=/Users/arimmer/Work/Reference/Reference/hg38.fa
 log_file_name=csn_lookup_log.txt
