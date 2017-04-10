@@ -8,6 +8,17 @@ import process
 application = Flask(__name__)
 
 
+def create_output_directory():
+    """
+    Make sure we have somewhere to put the output of each
+    CSN lookup
+    """
+    submissions_dir = os.getcwd() + "/submissions"
+
+    if not os.path.exists(submissions_dir):
+        os.mkdir(submissions_dir)
+
+
 def log_function_enter_and_exit(the_function):
     def wrapper(*args, **kwargs):
 
@@ -180,8 +191,9 @@ if __name__ == "__main__":
     application.debug = False
     application.logger.info("Setting up loggers")
 
-    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(pathname)s - %(lineno)s - %(message)s")
+    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(pathname)s - Line %(lineno)s - %(message)s")
     load_config_from_file()
+    create_output_directory()
 
     file_handler = logging.FileHandler(application.config['log_file_name'])
     file_handler.setFormatter(formatter)
