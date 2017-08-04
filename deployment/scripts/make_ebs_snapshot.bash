@@ -10,9 +10,9 @@ aws ec2 run-instances --image-id ami-2d09eb5a --count 1 --instance-type t2.small
 aws ec2 attach-volume --volume-id $EBS_VOLUME_ID --instance-id $EC2_INSTANCE_ID --device /dev/sdf
 
 # Mount the EBS volume as a file-system. These commands must be run on the EC2 instance (remotely with AWS CLI or Fabric?)
-sudo mkfs -t ext3 /dev/sdh
+sudo mkfs -t ext3 /dev/sdf
 sudo mkdir /media/volume1
-sudo mount /dev/sdh /media/volume1
+sudo mount /dev/sdf /media/volume1
 
 # Copy reference files to EC2 instance. These should also be run on the EC2 instance to take advantage of the fast connections between S3 and EBS volumes
 # in the Amazon data centre
